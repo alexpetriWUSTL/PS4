@@ -25,7 +25,7 @@ setClass(Class = "door", #use setclass to establish class "Door" with a numeric 
            chosenDoor = c(),
            carDoor = c(),
            switch = c(),
-           winner = c()
+           winner = c(NA)
          )
 )
 
@@ -33,26 +33,54 @@ setClass(Class = "door", #use setclass to establish class "Door" with a numeric 
 setValidity("door", function(object){ #set the validity so that objects in class door that are integer will return a fail statement
   if(!is.integer(object@chosenDoor)){
     return("The object is not of type integer")
-  }
-  if(!is.integer(object@carDoor)){
+  } else if(!is.integer(object@carDoor)){
     return("The object is not of type integer")
-  }
-  if(!is.logical(object@switch)){
+  } else if(!is.logical(object@switch)){
     return("The object is not of type logical")
-  }
-  if(!is.logical(object@winner)){
+  } else if(!is.logical(object@winner)){
     return("The object is not of type logical")
-  }
-  if(object@chosenDoor < 1 | object@chosenDoor > 3){
+  } else if(object@chosenDoor < 1 | object@chosenDoor > 3){
     return("You must choose a door number between 1 and 3")
-  }
-  if(object@carDoor < 1 | object@carDoor > 3){
+  } else if(object@carDoor < 1 | object@carDoor > 3){
     return("The car must be hidden in a door numbered between 1 and 3")
   }
 }
 )
 
-test()
+
+setGeneric("PlayGame", def = function(object){ #set my generic PlayGame function
+  standardGeneric("PlayGame")
+}
+)
+
+setMethod("PlayGame", signature("door"), function(object){ #set the specific method
+  carDoor <- as.integer(sample(1:3, 1)) #a sample of 1-3 for where the car is located
+  firstDoor <- as.integer(sample(1:3, 1))
+  if(switch == FALSE){
+    chosenDoor <- firstDoor
+  } else {
+    openDoor <- c(as.integer(1:3))
+    openDoor <- openDoor[-c(carDoor, firstDoor)]
+    newDoorSelection <- c(as.integer(1:3))
+    chosenDoor <- newDoorSelection[-c(firstDoor, openDoor)]
+  } 
+  if(identical(as.integer(object@chosenDoor), as.integer(object@carDoor))) { #if the user picks the car door, they return a congrats statement
+    print("Congratulations, you have chosen the correct door!")
+    print(car)
+  } else { #otherwise...
+    print("Sorry, you have chosen the incorrect door")
+    print(car)
+  }
+}
+)
+
+
+carDoor <- sample(1:3, 1) #a sample of 1-3 for where the car is located
+firstDoor <- sample(1:3, 1)
+carDoor
+firstDoor
+openDoor <- c(1:3)
+openDoor <- openDoor[-c(carDoor, firstDoor)]
 
 
 
